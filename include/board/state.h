@@ -1,6 +1,10 @@
 #ifndef BOARD_STATE_H
 #define BOARD_STATE_H
 
+#ifndef BOARD_STATE_BITBOARD_ALIGNMENT
+#define BOARD_STATE_BITBOARD_ALIGNMENT 16
+#endif
+
 #include "include/aliases/uints.h"
 #include "include/board/constants.h"
 
@@ -8,7 +12,7 @@
  * @brief Represents current chess position.
  *
  * Stores the board using bitboards. The structure contains no dynamically
- * allocated memory and has a fixed size of 126 bytes.
+ * allocated memory and has a fixed size of 128 bytes.
  *
  * ```
  * typedef struct {
@@ -19,6 +23,9 @@
  *     U8 en_passant;
  * } BoardState;
  * ```
+ *
+ * @note The actual size is 126 bytes but `sizeof(BoardState)` is 128 bytes due
+ * to alignment padding.
  */
 typedef struct {
     /**
@@ -29,7 +36,7 @@ typedef struct {
      *
      * @note Square indexing convention is `a1 = 0`, `b1 = 1`, `...`, `h8 = 63`.
      */
-    U64 bitboards[BITBOARD_COUNT];
+    _Alignas(BOARD_STATE_BITBOARD_ALIGNMENT) U64 bitboards[BITBOARD_COUNT];
 
     /**
      * @brief Number of half-moves played.
