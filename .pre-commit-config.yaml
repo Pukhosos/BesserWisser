@@ -24,3 +24,10 @@ repos:
         types: [python]
         pass_filenames: false
         always_run: true
+
+      - id: unit-tests
+        name: unit-tests
+        entry: pytest tests/unit/ -n 8
+        language: system
+        pass_filenames: false
+        always_run: true
