@@ -3,7 +3,11 @@ name = "BesserWisser"
 version = "0.0.0"
 description = "Python support for BesserWisser chess engine."
 authors = [{ name = "Emelianov Artem", email = "penguin5726@proton.me" }]
-dependencies = ["filelock"]
+dependencies = [
+    "filelock",
+    "python-chess",
+    "zstandard",
+]
 requires-python = "==3.15.*"
 readme = "README.md"
 license = "AGPL-3.0-or-later"
@@ -32,7 +36,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.ruff]
 line-length = 88
-src = ["tests"]
+src = ["scripts", "tests"]
 
 [tool.ruff.lint.isort]
 force-single-line = false
@@ -80,6 +84,17 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
+"scripts/generate/**" = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "T201",
+]
 "tests/**" = [
     "D100",
     "D101",
@@ -94,8 +109,8 @@ ignore = [
 
 [tool.mypy]
 python_version = "3.15"
-files = ["tests"]
-mypy_path = ["tests"]
+files = ["scripts", "tests"]
+mypy_path = ["scripts", "tests"]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
@@ -131,6 +146,7 @@ addopts = [
     "--doctest-glob=*.md",
 ]
 markers = ["example: this is an example test"]
+pythonpath = ["scripts"]
 testpaths = ["."]
 norecursedirs = [
     "__pycache__",

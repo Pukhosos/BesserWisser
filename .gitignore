@@ -10,3 +10,5 @@ __pycache__
 
 testdata/chess/*
 !testdata/chess/README.md
+testdata/generated/*
+!testdata/generated/README.md
