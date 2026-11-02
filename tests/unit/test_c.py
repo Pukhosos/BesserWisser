@@ -1,7 +1,7 @@
 from pathlib import Path
 from subprocess import CompletedProcess, run
 
-from pytest import fail, mark
+from pytest import fail, mark, param
 
 from tests.shared import UNIT_TESTS_PATH, CTestCase, collect_c_tests, get_test_case_id
 
@@ -9,7 +9,7 @@ from tests.shared import UNIT_TESTS_PATH, CTestCase, collect_c_tests, get_test_c
 @mark.parametrize(
     argnames='c_test_case',
     argvalues=[
-        c_test_case
+        param(c_test_case, marks=c_test_case.markers)
         for c_test_file in collect_c_tests(UNIT_TESTS_PATH)
         for c_test_case in c_test_file.tests
     ],
