@@ -1,13 +1,17 @@
 from dataclasses import dataclass
 from itertools import takewhile
 from pathlib import Path
-from re import Pattern, compile  # noqa: A004
+from re import Match, Pattern, compile  # noqa: A004
 from string import Template
 from textwrap import dedent
 from typing import Final, Literal
 
-from tests.shared.constants import PROJECT_ROOT, TESTS_PATH
+from pytest import mark
 
+from tests.shared.constants import PROJECT_ROOT, TESTS_PATH
+from tests.shared.ctestcase import CTestCase
+
+TEST_MARKER_PREFIX: Final[str] = '// mark: '
 C_DEPENDENCY_DECLARATION_PREFIX: Final[str] = '// depends-on: '
 C_TEST_PATTERN: Final[Pattern[str]] = compile(
     pattern=r'static void (?P<test_case>test_[a-zA-Z0-9_]+)\(\)',
@@ -53,21 +57,36 @@ class CTestFile:
         ]
 
     @property
-    def tests(self) -> list[str]:
+    def tests(self) -> list[CTestCase]:
         """Test function names in their order of appearance."""
 
-        return [
-            match.group('test_case')
-            for match
-            in C_TEST_PATTERN.finditer(self.path.read_text())
-        ]  # fmt: skip
+        markers: list[str] = []
+        c_test_cases: list[CTestCase] = []
+        for line in self.path.read_text().splitlines():
+            if line.startswith(TEST_MARKER_PREFIX):
+                markers.append(line.removeprefix(TEST_MARKER_PREFIX).strip())
+                continue
+            m: Match[str] | None = C_TEST_PATTERN.match(line)
+            if m is not None:
+                c_test_case: CTestCase = CTestCase(
+                    build_name=self.c_build_name,
+                    test_name=m.group('test_case'),
+                    test_index=len(c_test_cases),
+                    markers=tuple(getattr(mark, marker) for marker in markers),
+                )
+                c_test_cases.append(c_test_case)
+                markers.clear()
+                continue
+            if len(markers) > 0:
+                raise SyntaxError(f'unbound markers: {', '.join(markers)}')  # fmt: skip
+        return c_test_cases
 
     @property
     def test_dispatch(self) -> str:
         """Generate a `C` switch statement dispatching tests by index."""
 
         cases: str = ' '.join(
-            f'case {index}: {test}(); break;'
+            f'case {index}: {test.test_name}(); break;'
             for index, test
             in enumerate(self.tests)
         )  # fmt: skip

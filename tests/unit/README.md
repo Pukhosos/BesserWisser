@@ -29,7 +29,7 @@ Each function is discovered automatically and executed as a separate pytest test
 case. A nonzero exit code, including one caused by a failed assertion,
 compilation error, etc. marks the test as failed.
 
-## Declaring Dependencies
+### Declaring Dependencies
 
 If a test requires additional `.c` source files, declare them at the very
 beginning of the test file:
@@ -50,6 +50,27 @@ static void test_example() {
 
 Include pnaths should be relative to the repository root. All dependency
 declarations must be consecutive and appear before any other lines.
+
+### Adding Pytest Markers
+
+Individual C tests can be assigned pytest markers using `// mark:` comments
+placed immediately above their declarations:
+
+```c
+#include <assert.h>
+
+#include "include/example.h"
+
+// mark: example
+static void test_example() {
+    assert(example() == 42);
+}
+
+#include "tests/headers/dispatch.h"
+```
+
+Multiple markers can be assigned to the same test by placing consecutive
+marker comments above its declaration.
 
 ## Running Tests
 

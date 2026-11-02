@@ -5,6 +5,7 @@
 
 #include "testdata/c_test/example.h"
 
+// mark: example
 static void test_example() {
     assert(example() == 42);
 }

@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import NamedTuple
 
+from pytest import MarkDecorator
+
 
 class CTestCase(NamedTuple):
     """Identifies a `C` test by its executable name and test index."""
@@ -8,6 +10,7 @@ class CTestCase(NamedTuple):
     build_name: str
     test_name: str
     test_index: int
+    markers: tuple[MarkDecorator, ...]
 
     def get_run_args(self, native_builds_dir: Path) -> tuple[str, str]:
         """Return the executable path and test index as subprocess arguments."""
