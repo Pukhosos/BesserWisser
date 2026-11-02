@@ -8,6 +8,7 @@ class CTestCase(NamedTuple):
     build_name: str
     test_name: str
     test_index: int
+    markers: tuple[str, ...]
 
     def get_run_args(self, native_builds_dir: Path) -> tuple[str, str]:
         """Return the executable path and test index as subprocess arguments."""

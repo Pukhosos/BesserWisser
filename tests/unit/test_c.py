@@ -9,13 +9,9 @@ from tests.shared import UNIT_TESTS_PATH, CTestCase, collect_c_tests, get_test_c
 @mark.parametrize(
     argnames='c_test_case',
     argvalues=[
-        CTestCase(
-            build_name=c_test_file.c_build_name,
-            test_name=test_name,
-            test_index=index,
-        )
+        c_test_case
         for c_test_file in collect_c_tests(UNIT_TESTS_PATH)
-        for index, test_name in enumerate(c_test_file.tests)
+        for c_test_case in c_test_file.tests
     ],
     ids=get_test_case_id,
 )
