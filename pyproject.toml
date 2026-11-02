@@ -130,6 +130,7 @@ addopts = [
     "--doctest-modules",
     "--doctest-glob=*.md",
 ]
+markers = ["example: this is an example test"]
 testpaths = ["."]
 norecursedirs = [
     "__pycache__",
