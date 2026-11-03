@@ -17,3 +17,11 @@
         > testdata/generated/lichess-games.fen \
     && rm testdata/generated/lichess-games-unsorted.fen
     ```
+
+- `uci-plies.txt`
+
+    Generate all possible plies in UCI notation with:
+
+    ```sh
+    scripts/generate/all_uci_plies.py testdata/generated/uci-plies.txt
+    ```
