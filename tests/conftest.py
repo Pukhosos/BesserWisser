@@ -9,7 +9,7 @@ from tests.shared import PROJECT_ROOT, TESTS_PATH, UNIT_TESTS_PATH, collect_c_te
 
 @fixture(scope='session')
 def project_root() -> Path:
-    """Path to the root of `GrushaChess`."""
+    """Path to the root of `BesserWisser`."""
 
     return PROJECT_ROOT
 
