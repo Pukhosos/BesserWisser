@@ -4,7 +4,7 @@
 #include "include/aliases/uints.h"
 
 /**
- * @brief Aggregate occupancy bitboard indexes.
+ * @brief Aggregate occupancy bitboard indices.
  *
  * Values correspond directly to indices in `BoardState::bitboards`, following
  * the 12 individual piece bitboards. `WHITE_OCCUPANCY` and `BLACK_OCCUPANCY`
