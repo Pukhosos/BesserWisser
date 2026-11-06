@@ -8,6 +8,7 @@ __pycache__
 .ruff_cache
 .venv
 
+src/plygen/runtimeconst/attack_tables/pext/*.c
 testdata/chess/*
 !testdata/chess/README.md
 testdata/generated/*
