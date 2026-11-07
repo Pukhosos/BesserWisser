@@ -34,10 +34,20 @@ def make_parser() -> ArgumentParser:
         required=True,
         help='Number of FEN strings to generate.',
     )
+    parser.add_argument(
+        '--include-pseudo-legal-move-count',
+        action='store_true',
+        help='Append the number of pseudo-legal moves to each FEN string.',
+    )
     return parser
 
 
-def generate_fens(archive_path: Path, output_path: Path, limit: int) -> None:
+def generate_fens(
+    archive_path: Path,
+    output_path: Path,
+    limit: int,
+    include_pseudolegal_move_count: bool = False,
+) -> None:
     """Generate FEN strings for all mainline positions in a PGN archive."""
 
     count: int = 0
@@ -52,7 +62,10 @@ def generate_fens(archive_path: Path, output_path: Path, limit: int) -> None:
             board: Board = game.board()
             for move in game.mainline_moves():
                 board.push(move)
-                output_file.write(board.fen(en_passant='fen') + '\n')
+                fen: str = board.fen(en_passant='fen')
+                if include_pseudolegal_move_count:
+                    fen += f'\t{board.pseudo_legal_moves.count()}'
+                output_file.write(fen + '\n')
                 count += 1
                 if count == limit:
                     return None
@@ -67,13 +80,19 @@ def main() -> None:
     archive_path: Path = arguments.archive
     output_path: Path = arguments.output
     game_count: int = arguments.number
+    include_pseudolegal_move_count: bool = arguments.include_pseudolegal_move_count
     if not archive_path.is_file():
         parser.error(f'Archive does not exist: {archive_path}')
     if not output_path.parent.is_dir():
         parser.error(f'Output directory does not exist: {output_path.parent}')
     if archive_path.resolve() == output_path.resolve():
         parser.error('Input and output paths must be different.')
-    generate_fens(archive_path, output_path, game_count)
+    generate_fens(
+        archive_path,
+        output_path,
+        game_count,
+        include_pseudolegal_move_count,
+    )
 
 
 if __name__ == '__main__':
