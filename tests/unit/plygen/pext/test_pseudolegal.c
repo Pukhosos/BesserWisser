@@ -30,7 +30,7 @@
 #endif
 
 #ifndef FEN_TESTDATA
-#define FEN_TESTDATA "testdata/generated/lichess-games-pseudo-legal-moves.fen"
+#define FEN_TESTDATA "testdata/generated/lichess-games-pseudolegal-moves.fen"
 #endif
 
 static void test_pseudolegal_plies_from_fen() {

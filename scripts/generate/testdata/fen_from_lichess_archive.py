@@ -35,7 +35,7 @@ def make_parser() -> ArgumentParser:
         help='Number of FEN strings to generate.',
     )
     parser.add_argument(
-        '--include-pseudo-legal-move-count',
+        '--include-pseudolegal-move-count',
         action='store_true',
         help='Append the number of pseudo-legal moves to each FEN string.',
     )
