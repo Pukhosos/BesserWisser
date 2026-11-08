@@ -11,12 +11,12 @@
 #include "include/board/fen/interface.h"
 #include "include/board/state.h"
 
-#ifndef FEN_TESTDATA
-#define FEN_TESTDATA "testdata/generated/lichess-games.fen"
+#ifndef TESTDATA
+#define TESTDATA "testdata/generated/lichess-games.fen"
 #endif
 
 static void test_to_fen_inverts_from_fen() {
-    FILE *file = fopen(FEN_TESTDATA, "r");
+    FILE *file = fopen(TESTDATA, "r");
     assert(file != NULL);
     char original_fen[FEN_BUFFER_SIZE];
     char serialized_fen[FEN_BUFFER_SIZE];

@@ -126,8 +126,8 @@ FenParsingResult from_fen(BoardState *board_state, const char *fen) {
     if (*fen_symbol != '\0') return FEN_INVALID_FORMAT;
 
     /*
-     * Parse into a temporary position so that the original position remains
-     * unchanged if any field is invalid.
+     * Parse into a temporary board state so that the original board state
+     * remains unchanged if any field is invalid.
      */
     BoardState temp = {0};
     temp.en_passant = NO_EN_PASSANT;
@@ -263,7 +263,7 @@ FenParsingResult from_fen(BoardState *board_state, const char *fen) {
     if (ply_count > MAX_PLY_COUNT) return FEN_INVALID_FULLMOVE_NUMBER;
     temp.ply_count = (U16)ply_count;
 
-    // Commit the fully parsed position
+    // Commit the fully parsed board state
     *board_state = temp;
     return FEN_OK;
 }

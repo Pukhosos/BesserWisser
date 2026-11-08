@@ -37,7 +37,7 @@ static char char_from_piece(PieceKind piece) {
 }
 
 FenSerializationResult to_fen(const BoardState *board_state, char *fen) {
-    if (board_state == NULL) return FEN_SERIALIZATION_NULL_BOARD_POSITION;
+    if (board_state == NULL) return FEN_SERIALIZATION_NULL_BOARD_STATE;
     if (fen == NULL) return FEN_SERIALIZATION_NULL_FEN;
     char temp[FEN_BUFFER_SIZE];
     size_t length = 0;

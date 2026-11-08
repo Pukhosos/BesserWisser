@@ -5,7 +5,7 @@
 #include "include/plystruct/ply.h"
 
 /**
- * @brief Generate all pseudo-legal plies for the given position.
+ * @brief Generate all pseudo-legal plies for the given board state.
  *
  * @param board_state Pointer to the current board state.
  * @param plyarray Pointer to to the first available buffer element.

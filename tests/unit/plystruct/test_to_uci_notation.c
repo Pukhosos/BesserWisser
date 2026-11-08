@@ -6,8 +6,8 @@
 #include "include/plystruct/constants.h"
 #include "include/plystruct/ply.h"
 
-#ifndef UCI_TESTDATA
-#define UCI_TESTDATA "testdata/generated/uci-plies.txt"
+#ifndef TESTDATA
+#define TESTDATA "testdata/generated/uci-plies.txt"
 #endif
 
 static Ply make_ply_from_uci_notation(const char* uci) {
@@ -28,7 +28,7 @@ static Ply make_ply_from_uci_notation(const char* uci) {
 }
 
 static void test_to_uci_notation() {
-    FILE *file = fopen(UCI_TESTDATA, "r");
+    FILE *file = fopen(TESTDATA, "r");
     assert(file != NULL);
     char original_uci[UCI_PLY_BUFFER_SIZE + 1];
     char serialized_uci[UCI_PLY_BUFFER_SIZE];
