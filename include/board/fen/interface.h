@@ -6,7 +6,7 @@
 #include "include/board/fen/enums/serialization_result.h"
 
 /**
- * @brief Parse a FEN string into a chess position.
+ * @brief Parse a FEN string into a board state.
  *
  * @param board_state `BoardState` to parse FEN into.
  * @param fen Null-terminated FEN string to parse.
@@ -36,7 +36,7 @@
 FenParsingResult from_fen(BoardState* board_state, const char* fen);
 
 /**
- * @brief Convert a chess position into a FEN string.
+ * @brief Convert a board state into a FEN string.
  *
  * @param board_state `BoardState` to convert into FEN.
  * @param fen Destination buffer to store the null-terminated FEN string. The

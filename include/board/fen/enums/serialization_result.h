@@ -2,11 +2,11 @@
 #define BOARD_FEN_ENUMS_SERIALIZATION_RESULT_H
 
 /**
- * @brief Result of serializing a board position into Forsyth–Edwards Notation.
+ * @brief Result of serializing a board state into Forsyth–Edwards Notation.
  */
 typedef enum {
     /**
-     * @brief Board position serialized successfully.
+     * @brief Board state serialized successfully.
      *
      * The resulting FEN string contains all six fields and has been
      * successfully copied into the destination buffer.
@@ -20,7 +20,7 @@ typedef enum {
      *
      * @note The destination `fen` buffer remains unchanged.
      */
-    FEN_SERIALIZATION_NULL_BOARD_POSITION = 0x01,
+    FEN_SERIALIZATION_NULL_BOARD_STATE = 0x01,
 
     /**
      * @brief `fen` is NULL.
