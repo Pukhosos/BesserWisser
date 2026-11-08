@@ -5,6 +5,8 @@
 #define BOARD_STATE_BITBOARD_ALIGNMENT 16
 #endif
 
+#include "stdalign.h"
+
 #include "include/aliases/uints.h"
 #include "include/board/constants.h"
 
@@ -36,7 +38,7 @@ typedef struct {
      *
      * @note Square indexing convention is `a1 = 0`, `b1 = 1`, `...`, `h8 = 63`.
      */
-    _Alignas(BOARD_STATE_BITBOARD_ALIGNMENT) U64 bitboards[BITBOARD_COUNT];
+    alignas(BOARD_STATE_BITBOARD_ALIGNMENT) U64 bitboards[BITBOARD_COUNT];
 
     /**
      * @brief Number of half-moves played.
