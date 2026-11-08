@@ -29,12 +29,12 @@
 #define PLYARRAY_SIZE 256
 #endif
 
-#ifndef FEN_TESTDATA
-#define FEN_TESTDATA "testdata/generated/lichess-games-pseudolegal-moves.fen"
+#ifndef TESTDATA
+#define TESTDATA "testdata/generated/lichess-games-pseudolegal-moves.fen"
 #endif
 
 static void test_pseudolegal_plies_from_fen() {
-    FILE* file = fopen(FEN_TESTDATA, "r");
+    FILE* file = fopen(TESTDATA, "r");
     assert(file != NULL);
     char line[256];
     BoardState board_state;
