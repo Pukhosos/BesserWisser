@@ -31,4 +31,14 @@ U64 get_bishop_attacks(Square square, U64 occupancy);
  */
 U64 get_rook_attacks(Square square, U64 occupancy);
 
+/**
+ * @brief Compute the bitboard of all squares attacked by a given side.
+ *
+ * @param board_state Pointer to the current board state.
+ * @param attacking_side Side whose attacks are to be computed.
+ *
+ * @return Bitboard containing all squares attacked by the specified side.
+ */
+U64 get_attacked_squares(const BoardState* board_state, U16 attacking_side);
+
 #endif
