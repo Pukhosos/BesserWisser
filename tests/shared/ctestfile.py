@@ -120,6 +120,8 @@ class CTestFile:
             '-Wpedantic',
             '-g',
             f'-{optimization_level}',
+            '-mbmi2',
+            '-flto',
             '-fsanitize=address,undefined',
             '-fno-omit-frame-pointer',
             '-fno-sanitize-recover=all',
