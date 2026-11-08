@@ -76,4 +76,49 @@ static inline Unply make_unply(
     );
 }
 
+/**
+ * @brief Extract the previous castling rights from `unply`.
+ *
+ * @param unply 32-bit encoded chess unply.
+ *
+ * @return Previous castling rights bitmask.
+ */
+static inline U8 get_unply_castling_rights(Unply unply) {
+    return (U8)(unply & 0xF);
+}
+
+/**
+ * @brief Extract the captured piece from `unply`.
+ *
+ * @param unply 32-bit encoded chess unply.
+ *
+ * @return Captured piece identifier, `0xF` means no capture.
+ */
+static inline U8 get_unply_captured_piece(Unply unply) {
+    return (U8)((unply >> 4) & 0xF);
+}
+
+/**
+ * @brief Extract the previous en passant target from `unply`.
+ *
+ * @param unply 32-bit encoded chess unply.
+ *
+ * @return Previous en passant target square, or `NO_EN_PASSANT = 0xFF` if there
+ * was none.
+ */
+static inline U8 get_unply_en_passant(Unply unply) {
+    return (U8)(unply >> 8);
+}
+
+/**
+ * @brief Extract the previous halfmove clock from `unply`.
+ *
+ * @param unply 32-bit encoded chess unply.
+ *
+ * @return Previous halfmove clock.
+ */
+static inline U16 get_unply_ply_clock(Unply unply) {
+    return (U16)(unply >> 16);
+}
+
 #endif
