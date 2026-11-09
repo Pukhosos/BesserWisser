@@ -5,8 +5,6 @@
 #define BOARD_STATE_BITBOARD_ALIGNMENT 16
 #endif
 
-#include "stdalign.h"
-
 #include "include/aliases/uints.h"
 #include "include/board/constants.h"
 
