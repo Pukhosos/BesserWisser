@@ -156,7 +156,10 @@ addopts = [
     "--doctest-modules",
     "--doctest-glob=*.md",
 ]
-markers = ["example: this is an example test"]
+markers = [
+    "example: this is an example test",
+    "perft: verifies legal move generation by counting nodes",
+]
 pythonpath = ["scripts"]
 testpaths = ["."]
 norecursedirs = [

@@ -40,6 +40,11 @@ def make_parser() -> ArgumentParser:
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
+        '--include-legal-move-count',
+        action='store_true',
+        help='Append the number of legal moves to each FEN string.',
+    )
+    group.add_argument(
         '--include-pseudolegal-move-count',
         action='store_true',
         help='Append the number of pseudo-legal moves to each FEN string.',
@@ -79,10 +84,11 @@ def move_to_ply(board: Board, move: Move) -> int:
     return ply_kind | promotion | (from_square << 6) | to_square
 
 
-def generate_fens(
+def generate_fens(  # noqa: PLR0913, PLR0917
     archive_path: Path,
     output_path: Path,
     limit: int,
+    include_legal_move_count: bool = False,
     include_pseudolegal_move_count: bool = False,
     include_transition: bool = False,
 ) -> None:
@@ -101,6 +107,8 @@ def generate_fens(
             for move, next_move in pairwise(chain(game.mainline_moves(), [NULL_MOVE])):
                 board.push(move)
                 fen: str = board.fen(en_passant='fen')
+                if include_legal_move_count:
+                    fen += f'\t{board.legal_moves.count()}'
                 if include_pseudolegal_move_count:
                     fen += f'\t{board.pseudo_legal_moves.count()}'
                 if include_transition:
@@ -125,6 +133,7 @@ def main() -> None:
     archive_path: Path = arguments.archive
     output_path: Path = arguments.output
     game_count: int = arguments.number
+    include_legal_move_count: bool = arguments.include_legal_move_count
     include_pseudolegal_move_count: bool = arguments.include_pseudolegal_move_count
     include_transitions: bool = arguments.include_transitions
     if not archive_path.is_file():
@@ -137,6 +146,7 @@ def main() -> None:
         archive_path,
         output_path,
         game_count,
+        include_legal_move_count,
         include_pseudolegal_move_count,
         include_transitions,
     )
