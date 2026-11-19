@@ -22,6 +22,9 @@ enum {
 
     /** @brief Sentinel value indicating that no en passant target exists. */
     NO_EN_PASSANT = 0xFF,
+
+    /** @brief Sentinel value indicating that there is no piece on a square. */
+    EMPTY_SQUARE = 0xF,
 };
 
 #endif

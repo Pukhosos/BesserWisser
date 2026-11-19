@@ -1,4 +1,4 @@
-// depends-on: src/board/from_fen.c
+// depends-on: src/board/fen/from_fen.c
 
 #include <assert.h>
 #include <stdint.h>

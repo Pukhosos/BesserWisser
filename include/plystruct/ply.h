@@ -2,6 +2,7 @@
 #define PLYSTRUCT_PLY_H
 
 #include "include/aliases/uints.h"
+#include "include/board/enums/square.h"
 #include "include/plystruct/enums/ply_kind.h"
 #include "include/plystruct/enums/promotion_kind.h"
 #include "include/plystruct/enums/masks.h"
@@ -118,6 +119,51 @@ static inline Ply make_en_passant_ply(U8 from, U8 to) {
  */
 static inline Ply make_castling_ply(U8 from, U8 to) {
     return make_ply(from, to, CASTLING_MOVE, (PromotionKind)0);
+}
+
+/**
+ * @brief Extract the source square from `ply`.
+ *
+ * @param ply 16-bit encoded chess ply.
+ *
+ * @return Source square index (0–63).
+ */
+static inline Square get_ply_from_square(Ply ply) {
+    return (Square)((ply >> 6) & 0x3F);
+}
+
+/**
+ * @brief Extract the destination square from `ply`.
+ *
+ * @param ply 16-bit encoded chess ply.
+ *
+ * @return Destination square index (0–63).
+ */
+static inline Square get_ply_to_square(Ply ply) {
+    return (Square)(ply & 0x3F);
+}
+
+/**
+ * @brief Extract the promotion piece from `ply`.
+ *
+ * @param ply 16-bit encoded chess ply.
+ *
+ * @return Promotion piece identifier.
+ */
+static inline PromotionKind get_ply_promotion_kind(Ply ply) {
+    return (PromotionKind)(ply & PROMOTION_KIND_MASK);
+}
+
+/**
+ * @brief Extract the ply kind from `ply`.
+ *
+ * @param ply 16-bit encoded chess ply.
+ *
+ * @return Ply kind (`ORDINARY_MOVE`, `PROMOTION_MOVE`, `EN_PASSANT_MOVE`, or
+ * `CASTLING_MOVE`).
+ */
+static inline PlyKind get_ply_kind(Ply ply) {
+    return (PlyKind)(ply & PLY_KIND_MASK);
 }
 
 /**
