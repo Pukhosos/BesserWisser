@@ -6,11 +6,15 @@ from __future__ import annotations
 
 from argparse import ArgumentParser, Namespace
 from io import TextIOWrapper
+from itertools import chain, pairwise
 from pathlib import Path
+from typing import Final
 
-from chess import Board
+from chess import Board, Move
 from chess.pgn import Game, read_game
 from zstandard import ZstdDecompressor
+
+NULL_MOVE: Final[Move] = Move.null()
 
 
 def make_parser() -> ArgumentParser:
@@ -34,12 +38,45 @@ def make_parser() -> ArgumentParser:
         required=True,
         help='Number of FEN strings to generate.',
     )
-    parser.add_argument(
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
         '--include-pseudolegal-move-count',
         action='store_true',
         help='Append the number of pseudo-legal moves to each FEN string.',
     )
+    group.add_argument(
+        '--include-transitions',
+        action='store_true',
+        help='Append a Ply encoded as an integer followed by the resulting FEN.',
+    )
     return parser
+
+
+def move_to_ply(board: Board, move: Move) -> int:
+    """Convert a python-chess move to a 16-bit encoded ply."""
+
+    from_square: int = move.from_square
+    to_square: int = move.to_square
+    promotion: int = (
+        {
+            2: 0x0000,  # KNIGHT_PROMOTION
+            3: 0x1000,  # BISHOP_PROMOTION
+            4: 0x2000,  # ROOK_PROMOTION
+            5: 0x3000,  # QUEEN_PROMOTION
+        }[move.promotion]
+        if move.promotion is not None
+        else 0
+    )
+    ply_kind: int = (
+        0x4000
+        if move.promotion is not None
+        else 0x8000
+        if board.is_en_passant(move)
+        else 0xC000
+        if board.is_castling(move)
+        else 0x0000
+    )
+    return ply_kind | promotion | (from_square << 6) | to_square
 
 
 def generate_fens(
@@ -47,6 +84,7 @@ def generate_fens(
     output_path: Path,
     limit: int,
     include_pseudolegal_move_count: bool = False,
+    include_transition: bool = False,
 ) -> None:
     """Generate FEN strings for all mainline positions in a PGN archive."""
 
@@ -60,11 +98,18 @@ def generate_fens(
         game: Game | None = read_game(pgn_stream)
         while game is not None:
             board: Board = game.board()
-            for move in game.mainline_moves():
+            for move, next_move in pairwise(chain(game.mainline_moves(), [NULL_MOVE])):
                 board.push(move)
                 fen: str = board.fen(en_passant='fen')
                 if include_pseudolegal_move_count:
                     fen += f'\t{board.pseudo_legal_moves.count()}'
+                if include_transition:
+                    if next_move == NULL_MOVE:
+                        break
+                    fen += f'\t{move_to_ply(board, next_move)}'
+                    board.push(next_move)
+                    fen += f'\t{board.fen(en_passant='fen')}'  # fmt: skip
+                    board.pop()
                 output_file.write(fen + '\n')
                 count += 1
                 if count == limit:
@@ -81,6 +126,7 @@ def main() -> None:
     output_path: Path = arguments.output
     game_count: int = arguments.number
     include_pseudolegal_move_count: bool = arguments.include_pseudolegal_move_count
+    include_transitions: bool = arguments.include_transitions
     if not archive_path.is_file():
         parser.error(f'Archive does not exist: {archive_path}')
     if not output_path.parent.is_dir():
@@ -92,6 +138,7 @@ def main() -> None:
         output_path,
         game_count,
         include_pseudolegal_move_count,
+        include_transitions,
     )
 
 

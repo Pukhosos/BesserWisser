@@ -35,6 +35,23 @@
     && rm testdata/generated/lichess-games-unsorted.fen
     ```
 
+- `lichess-games-with-transitions.tsv`
+
+    Download `lichess_db_standard_rated_2014-09.pgn.zst` into `testdata/chess`
+    and generate `1_000_000` unique FENs:
+
+    ```sh
+    scripts/generate/testdata/fen_from_lichess_archive.py \
+        testdata/chess/lichess_db_standard_rated_2014-09.pgn.zst \
+        -o testdata/generated/lichess-games-with-transitions-unsorted.tsv \
+        -n 1_085_302 \
+        --include-transitions \
+    && LC_ALL=C sort -u -S 1G \
+        testdata/generated/lichess-games-with-transitions-unsorted.tsv \
+        > testdata/generated/lichess-games-with-transitions.tsv \
+    && rm testdata/generated/lichess-games-with-transitions-unsorted.tsv
+    ```
+
 - `uci-plies.txt`
 
     Generate all possible plies in UCI notation with:
