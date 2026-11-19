@@ -260,3 +260,67 @@ Unply apply_ply(BoardState* board_state, Ply ply) {
     ++board_state->ply_count;
     return unply;
 }
+
+void undo_ply(BoardState* board_state, Ply ply, Unply unply) {
+    const U16 side_to_move = (board_state->ply_count - 1) & (U16)0x0001;
+    const PlyKind ply_kind = get_ply_kind(ply);
+    const Square from = get_ply_from_square(ply);
+    const Square to = get_ply_to_square(ply);
+    const SquareMask from_mask = make_square_mask_from_square(from);
+    const SquareMask to_mask = make_square_mask_from_square(to);
+    const U64 ply_delta = from_mask | to_mask;
+    const PieceKind moving_piece_kind = get_moving_piece_kind(
+        board_state,
+        side_to_move,
+        ply_kind,
+        to_mask
+    );
+    const U8 captured_piece_kind = get_unply_captured_piece(unply);
+    switch (ply_kind) {
+        case EN_PASSANT_MOVE: {
+            const SquareMask captured_pawn = (SquareMask)(
+                (side_to_move == (U16)0)
+                ? to_mask >> 8
+                : to_mask << 8
+            );
+            board_state->bitboards[captured_piece_kind] ^= captured_pawn;
+            board_state->bitboards[BLACK_OCCUPANCY - side_to_move] ^= captured_pawn;
+            break;
+        }
+        case PROMOTION_MOVE: {
+            const PromotionKind promotion_kind = get_ply_promotion_kind(ply);
+            const U8 promotion_piece_kind = get_promotion_piece_kind(
+                promotion_kind,
+                side_to_move
+            );
+            board_state->bitboards[promotion_piece_kind] ^= to_mask;
+            board_state->bitboards[WHITE_PAWN + side_to_move] ^= to_mask;
+            break;
+        }
+        case CASTLING_MOVE: {
+            const U64 rook_delta = get_castling_rook_delta(to);
+            board_state->bitboards[WHITE_ROOK + side_to_move] ^= rook_delta;
+            board_state->bitboards[WHITE_OCCUPANCY + side_to_move] ^= rook_delta;
+            break;
+        }
+        case ORDINARY_MOVE: break;
+        default: __builtin_unreachable();
+    }
+    board_state->bitboards[moving_piece_kind] ^= ply_delta;
+    board_state->bitboards[WHITE_OCCUPANCY + side_to_move] ^= ply_delta;
+    if (
+        captured_piece_kind != EMPTY_SQUARE
+        && ply_kind != EN_PASSANT_MOVE
+    ) {
+        board_state->bitboards[captured_piece_kind] ^= to_mask;
+        board_state->bitboards[BLACK_OCCUPANCY - side_to_move] ^= to_mask;
+    }
+    board_state->bitboards[COMBINED_OCCUPANCY] = (
+        board_state->bitboards[WHITE_OCCUPANCY]
+        | board_state->bitboards[BLACK_OCCUPANCY]
+    );
+    board_state->ply_count -= 1;
+    board_state->ply_clock = get_unply_ply_clock(unply);
+    board_state->castling_rights = get_unply_castling_rights(unply);
+    board_state->en_passant = get_unply_en_passant(unply);
+}
