@@ -1,5 +1,5 @@
 // depends-on: src/bitmanip/lsb.c
-// depends-on: src/board/from_fen.c
+// depends-on: src/board/fen/from_fen.c
 // depends-on: src/plygen/internal/attacks/pext/bishop.c
 // depends-on: src/plygen/internal/attacks/pext/rook.c
 // depends-on: src/plygen/internal/attacks/pext/square.c
